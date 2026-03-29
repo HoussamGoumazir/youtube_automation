@@ -1,4 +1,4 @@
-# 🎯 Object Life - Social Media Automation System
+# 🎯 - Social Media Automation System
 
 ![Version](https://img.shields.io/badge/version-2.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)
@@ -6,12 +6,12 @@
 
 A professional, fully automated system for managing and uploading short-form video content across multiple social media platforms (YouTube Shorts, Instagram Reels, TikTok, and Facebook Reels). 
 
-This system was specifically designed for the **Object Life** channel concept (where everyday objects come to life and speak like humans in funny or relatable situations), using **Google Gemini AI** to generate viral, platform-specific metadata.
+This system was specifically designed for the channel concept (where everyday objects come to life and speak like humans in funny or relatable situations), using **Google Gemini AI** to generate viral, platform-specific metadata.
 
 ## ✨ Features
 
 - **🚀 Multi-Platform Uploading**: Simultaneously schedule and publish videos to YouTube, Instagram, TikTok, and Facebook.
-- **🤖 AI-Powered Metadata**: Uses Gemini 1.5 Flash to automatically generate viral titles, descriptions, captions, and hashtags tailored for each platform.
+- **🤖 AI-Powered Metadata**: Uses Gemini 3.1 Pro to automatically generate viral titles, descriptions, captions, and hashtags tailored for each platform.
 - **📅 Smart Scheduling**: Built-in support for different daily session types (`morning`, `noon`, `evening`) with specific tones and engagement hooks.
 - **📊 Analytics & Health Checks**: Built-in commands to monitor system health, check video availability, and view upload statistics.
 - **🔐 Secure Credential Management**: Encrypted token handling and OAuth 2.0 integration for YouTube API.
