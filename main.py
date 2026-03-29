@@ -8,16 +8,15 @@ from datetime import datetime
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
-from core.archive_manager import AdvancedArchiveManager
+from automation.workflow import AdvancedArchiveManager
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
 def display_banner():
     banner = """
-    🎯 YouTube Automation System
-    🚀 Object Life Shorts Uploader
-    📅 Version 2.0 | Professional Edition
+    🎯 Object Life — YouTube Automation System
+    🚀 Shorts Uploader v3.0 | Refactored Edition
     """
     print(banner)
 
@@ -49,7 +48,7 @@ def main():
             display_system_stats(manager)
             
         elif command == "setup":
-            from core.file_manager import AdvancedFileManager
+            from automation.files import AdvancedFileManager
             AdvancedFileManager()
             print("✅ System setup completed successfully!")
             

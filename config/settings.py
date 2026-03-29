@@ -1,9 +1,16 @@
 import os
-from datetime import datetime
+from pathlib import Path
+
+# Load .env if present (python-dotenv optional dependency)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 class Settings:
-    # المسارات
-    BASE_DIR = "/home/houssam/Documents/youtube_automation"
+    # Root directory = parent of this file (works regardless of where you clone the repo)
+    BASE_DIR = str(Path(__file__).resolve().parent.parent)
     VIDEOS_DIR = os.path.join(BASE_DIR, "videos")
     ARCHIVE_DIR = os.path.join(BASE_DIR, "archive")
     LOGS_DIR = os.path.join(BASE_DIR, "logs")
@@ -21,9 +28,9 @@ class Settings:
     PRIVACY_STATUS = "public"
     DEFAULT_LANGUAGE = "en"
     
-    # إعدادات الذكاء الاصطناعي - Gemini API
+    # Gemini AI — key loaded from GEMINI_API_KEY env variable
     GEMINI_MODEL = "gemini-1.5-flash"
-    GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
     GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     
     # إعدادات SEO ورفع التفاعل
@@ -59,25 +66,25 @@ class Settings:
         }
     }
     
-    # إعدادات وسائل التواصل الاجتماعي
+    # Social media — all credentials loaded from environment variables
     SOCIAL_MEDIA = {
         'facebook': {
-            'enabled': False,  # قم بتغييرها لـ True عندما تحصل على API Keys
-            'page_id': 'YOUR_FACEBOOK_PAGE_ID',
-            'access_token': 'YOUR_FACEBOOK_ACCESS_TOKEN',
-            'app_id': 'YOUR_FACEBOOK_APP_ID',
-            'app_secret': 'YOUR_FACEBOOK_APP_SECRET'
+            'enabled': os.getenv('FACEBOOK_ENABLED', 'false').lower() == 'true',
+            'page_id': os.getenv('FACEBOOK_PAGE_ID', 'YOUR_PAGE_ID'),
+            'access_token': os.getenv('FACEBOOK_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN'),
+            'app_id': os.getenv('FACEBOOK_APP_ID', 'YOUR_APP_ID'),
+            'app_secret': os.getenv('FACEBOOK_APP_SECRET', 'YOUR_APP_SECRET'),
         },
         'instagram': {
-            'enabled': False,  # Set to True when credentials are set
-            'username': 'YOUR_INSTAGRAM_USERNAME',
-            'password': 'YOUR_INSTAGRAM_PASSWORD',
-            'business_account_id': '' # Kept for backward compatibility if needed, but not used by instagrapi
+            'enabled': os.getenv('INSTAGRAM_ENABLED', 'false').lower() == 'true',
+            'username': os.getenv('INSTAGRAM_USERNAME', 'YOUR_USERNAME'),
+            'password': os.getenv('INSTAGRAM_PASSWORD', 'YOUR_PASSWORD'),
+            'business_account_id': ''
         },
         'tiktok': {
-            'enabled': False,  # Set to True when credentials are set
-            'session_id': 'YOUR_TIKTOK_SESSION_ID', # Cookies for browser automation
-            'headless': True  # Run browser in background
+            'enabled': os.getenv('TIKTOK_ENABLED', 'false').lower() == 'true',
+            'session_id': os.getenv('TIKTOK_SESSION_ID', 'YOUR_SESSION_ID'),
+            'headless': True
         }
     }
     
@@ -144,6 +151,24 @@ class Settings:
     
     @staticmethod
     def get_seo_optimized_prompt(session_type, video_name="Object Animation"):
+        """Deprecated: use ai.prompts.get_seo_optimized_prompt instead."""
+        from ai.prompts import get_seo_optimized_prompt
+        return get_seo_optimized_prompt(session_type, video_name)
+
+    @staticmethod
+    def get_platform_specific_prompt(platform, session_type):
+        """Deprecated: use ai.prompts.get_platform_specific_prompt instead."""
+        from ai.prompts import get_platform_specific_prompt
+        return get_platform_specific_prompt(platform, session_type)
+
+    @staticmethod
+    def get_platform_hashtags(platform, session_type):
+        """Deprecated: use ai.prompts.get_platform_hashtags instead."""
+        from ai.prompts import get_platform_hashtags
+        return get_platform_hashtags(platform, session_type)
+
+    @staticmethod
+    def validate_settings():
         """الحصول على محتوى مخصص لكل فترة للذكاء الاصطناعي مع استراتيجيات رفع التفاعل"""
         seo = Settings.SEO_SETTINGS
         tone = seo['tones'].get(session_type, "Funny and Relatable")

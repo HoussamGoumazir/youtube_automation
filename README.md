@@ -1,108 +1,142 @@
-# 🎯 Object Life - Social Media Automation System
+# 🎯 Object Life — Social Media Automation System
 
-![Version](https://img.shields.io/badge/version-2.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-3.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A professional, fully automated system for managing and uploading short-form video content across multiple social media platforms (YouTube Shorts, Instagram Reels, TikTok, and Facebook Reels). 
+A professional, fully automated pipeline that picks a video from a local folder, uses **Google Gemini AI** to generate viral, platform-specific metadata, then uploads it to **YouTube Shorts**, **Instagram Reels**, **TikTok**, and **Facebook Reels** — all with a single command.
 
-This system was specifically designed for the **Object Life** channel concept (where everyday objects come to life and speak like humans in funny or relatable situations), using **Google Gemini AI** to generate viral, platform-specific metadata.
+Built for the **Object Life** channel: everyday objects coming to life in funny, relatable animated shorts.
 
-## ✨ Features
+---
 
-- **🚀 Multi-Platform Uploading**: Simultaneously schedule and publish videos to YouTube, Instagram, TikTok, and Facebook.
-- **🤖 AI-Powered Metadata**: Uses Gemini 1.5 Flash to automatically generate viral titles, descriptions, captions, and hashtags tailored for each platform.
-- **📅 Smart Scheduling**: Built-in support for different daily session types (`morning`, `noon`, `evening`) with specific tones and engagement hooks.
-- **📊 Analytics & Health Checks**: Built-in commands to monitor system health, check video availability, and view upload statistics.
-- **🔐 Secure Credential Management**: Encrypted token handling and OAuth 2.0 integration for YouTube API.
-- **📁 Automated Archiving**: Automatically moves processed videos to an archive directory to keep your workspace clean.
+## 🏗️ Project Structure
 
-## 🛠️ Prerequisites
-
-- Python 3.8 or higher
-- Google Cloud Console Account (for YouTube Data API v3)
-- Google AI Studio Account (for Gemini API Key)
-- Chrome Browser (for TikTok automation)
-
-## 📥 Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/HoussamGoumazir/youtube_automation.git
-   cd youtube_automation
-   ```
-
-2. **Set up a virtual environment (Recommended):**
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Initialize Directory Structure:**
-   ```bash
-   python main.py setup
-   ```
-
-## ⚙️ Configuration
-
-1. **API Keys & Credentials:**
-   - Open `config/settings.py` and replace `YOUR_GEMINI_API_KEY` with your actual Gemini API key.
-   - Update your social media credentials (Instagram, Facebook, TikTok) in the `SOCIAL_MEDIA` dictionary in `settings.py`.
-   - Update `config/credentials.py` and `youtube_credentials.json` with your real YouTube OAuth 2.0 Client credentials.
-
-2. **Video Folders:**
-   Place your ready `.mp4` videos in the respective folders under the `videos/` directory:
-   - `videos/morning/`
-   - `videos/noon/`
-   - `videos/evening/`
-
-## 🚀 Usage
-
-The system is controlled via the `main.py` entry point.
-
-### Running an Upload Session
-
-Run the script and specify the session type to process and upload the videos currently in that folder:
-
-```bash
-# Process morning videos
-python main.py morning
-
-# Process noon videos
-python main.py noon
-
-# Process evening videos
-python main.py evening
+```
+youtube_automation/
+├── ai/                     # AI & Content Generation
+│   ├── generator.py        # Gemini API client (with exponential back-off)
+│   └── prompts.py          # All prompt templates (separated from config)
+│
+├── uploaders/              # Platform-specific upload clients
+│   ├── youtube.py          # YouTube Data API v3 (resumable upload)
+│   ├── facebook.py         # Facebook Graph API Reels
+│   ├── instagram.py        # Instagram (via instagrapi)
+│   └── tiktok.py           # TikTok (via Selenium browser automation)
+│
+├── automation/             # Orchestration & File Management
+│   ├── workflow.py         # Main pipeline: file → AI → upload → archive
+│   └── files.py            # Video folder management & archiving
+│
+├── config/
+│   └── settings.py         # All settings loaded from .env variables
+│
+├── utils/
+│   ├── logger.py           # Structured logging
+│   └── error_handler.py    # @retry, @safe_upload, @log_pipeline_step decorators
+│
+├── videos/                 # Drop your MP4 files here (not committed)
+│   ├── morning/
+│   ├── noon/
+│   └── evening/
+│
+├── .env.example            # Template — copy to .env and fill in your keys
+├── .gitignore
+├── requirements.txt
+└── main.py                 # Entry point
 ```
 
-### System Monitoring Commands
+---
 
-```bash
-# Check the status and availability of videos in the folders
-python main.py check
+## 🔄 Pipeline Flow
 
-# Perform a comprehensive system run and API health check
-python main.py health
-
-# View historical statistics of successful and failed uploads
-python main.py stats
+```
+videos/morning/*.mp4
+        │
+        ▼
+automation/workflow.py  →  picks oldest video
+        │
+        ▼
+ai/generator.py         →  calls Gemini AI → returns JSON metadata for all platforms
+        │
+        ▼
+uploaders/youtube.py    →  uploads to YouTube Shorts (resumable, with retry)
+        │
+        ▼
+uploaders/instagram.py  →  uploads to Instagram Reels  (if enabled)
+uploaders/tiktok.py     →  uploads to TikTok            (if enabled)
+uploaders/facebook.py   →  uploads to Facebook Reels    (if enabled)
+        │
+        ▼
+automation/files.py     →  moves video to archive/ with metadata file
 ```
 
-## 📝 Logging
+---
 
-All activities, successful uploads, and errors are logged in the `logs/` directory. 
-- `youtube_automation.log`: Contains detailed execution logs.
-- `successful_uploads.log`: Contains a history of published videos and their generated AI metadata.
+## ⚙️ Setup
 
-## ⚠️ Disclaimer
+### 1. Clone & install
+```bash
+git clone https://github.com/HoussamGoumazir/youtube_automation.git
+cd youtube_automation
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-Automated uploading to social media platforms must comply with their respective Terms of Service. This tool is intended for personal automation and should be used responsibly to avoid account rate-limiting or bans.
+### 2. Configure environment variables
+```bash
+cp .env.example .env
+# Open .env and fill in your API keys
+```
+
+Key variables in `.env`:
+| Variable | Description |
+|---|---|
+| `GEMINI_API_KEY` | From [Google AI Studio](https://aistudio.google.com/) |
+| `FACEBOOK_ENABLED` | `true` / `false` |
+| `FACEBOOK_PAGE_ID` | Your Facebook Page ID |
+| `FACEBOOK_ACCESS_TOKEN` | Page Access Token |
+| `INSTAGRAM_ENABLED` | `true` / `false` |
+| `INSTAGRAM_USERNAME` | Your Instagram username |
+| `INSTAGRAM_PASSWORD` | Your Instagram password |
+| `TIKTOK_ENABLED` | `true` / `false` |
+| `TIKTOK_SESSION_ID` | Your TikTok `sessionid` cookie value |
+
+### 3. YouTube OAuth credentials
+- Download your **OAuth 2.0 Client credentials** JSON from [Google Cloud Console](https://console.cloud.google.com/).
+- Save it as `youtube_credentials.json` in the project root.
+- The first run will open a browser to authorize access. The token is then cached in `config/youtube_token.pickle`.
+
+### 4. Add videos
+Place `.mp4` files in:
+- `videos/morning/` — for the morning upload
+- `videos/noon/` — for the noon upload
+- `videos/evening/` — for the evening upload
+
+### 5. Run
+```bash
+python main.py morning     # or noon / evening
+
+python main.py check       # check video availability
+python main.py health      # system health check
+python main.py stats       # upload statistics
+python main.py setup       # create folder structure
+```
+
+---
+
+## 🛡️ Error Handling
+
+`utils/error_handler.py` provides three reusable decorators:
+
+| Decorator | Purpose |
+|---|---|
+| `@retry(max_attempts, delay, backoff)` | Auto-retry with exponential back-off |
+| `@safe_upload("platform")` | Catch all exceptions, log, return `None` |
+| `@log_pipeline_step("Step Name")` | Log entry/exit of any pipeline stage |
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT — see [LICENSE](LICENSE).
