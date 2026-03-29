@@ -10,8 +10,13 @@ Built for the **Object Life** channel: everyday objects coming to life in funny,
 
 ---
 
-## 🏗️ Project Structure
+- **🚀 Multi-Platform Uploading**: Simultaneously schedule and publish videos to YouTube, Instagram, TikTok, and Facebook.
+- **🤖 AI-Powered Metadata**: Uses Google Gemini to automatically generate viral titles, descriptions, captions, and hashtags.
+- **📅 Smart Scheduling**: Built-in support for different daily session types (`morning`, `noon`, `evening`).
+- **📊 Analytics & Health Checks**: Built-in commands to monitor system health and view upload statistics.
+- **📁 Automated Archiving**: Automatically moves processed videos to an archive directory.
 
+## 🏗️ Project Structure
 ```
 youtube_automation/
 ├── ai/                     # AI & Content Generation
