@@ -1,4 +1,4 @@
-# 🎯 Object Life — Social Media Automation System
+# 🎯 — Social Media Automation System
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)
 ![Version](https://img.shields.io/badge/version-3.0-blue.svg)
@@ -6,7 +6,7 @@
 
 A professional, fully automated pipeline that picks a video from a local folder, uses **Google Gemini AI** to generate viral, platform-specific metadata, then uploads it to **YouTube Shorts**, **Instagram Reels**, **TikTok**, and **Facebook Reels** — all with a single command.
 
-Built for the **Object Life** channel: everyday objects coming to life in funny, relatable animated shorts.
+Built for the channel: everyday objects coming to life in funny, relatable animated shorts.
 
 ---
 
